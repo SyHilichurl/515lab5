@@ -27,6 +27,7 @@ Adafruit_MPU6050 mpu;
 #define SAMPLE_RATE_MS 10  // 100Hz sampling rate (10ms between samples)
 #define CAPTURE_DURATION_MS 1000  // 1 second capture
 #define FEATURE_SIZE EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE  // Size of the feature array
+#define BUTTON_PIN A2
 
 // Capture state variables
 bool capturing = false;
@@ -36,6 +37,7 @@ int sample_count = 0;
 
 // Feature array to store accelerometer data
 float features[FEATURE_SIZE];
+bool lastButtonState = HIGH;
 
 /**
  * @brief      Copy raw feature data in out_ptr
@@ -61,6 +63,8 @@ void setup()
 {
     // Initialize serial
     Serial.begin(115200);
+    
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
     
     // Initialize MPU6050
     Serial.println("Initializing MPU6050...");
@@ -144,22 +148,19 @@ void run_inference() {
 /**
  * @brief      Arduino main function
  */
-void loop()
-{
-    // Check for serial commands
-    if (Serial.available() > 0) {
-        char cmd = Serial.read();
-        if (cmd == 'o') {
-            // Start capturing data
-            Serial.println("Starting gesture capture...");
-            sample_count = 0;
-            capturing = true;
-            capture_start_time = millis();
-            last_sample_time = millis();
-        }
+void loop() {
+    bool currentButtonState = digitalRead(BUTTON_PIN);
+
+    if (lastButtonState == HIGH && currentButtonState == LOW && !capturing) {
+        Serial.println("Button pressed: Starting gesture capture...");
+        sample_count = 0;
+        capturing = true;
+        capture_start_time = millis();
+        last_sample_time = millis();
     }
-    
-    // Capture data if in capturing mode
+
+    lastButtonState = currentButtonState;
+
     if (capturing) {
         capture_accelerometer_data();
     }
