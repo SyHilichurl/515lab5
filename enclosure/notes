@@ -1,0 +1,28 @@
+# Notes
+
+## Materials Used
+- **Microcontroller**: ESP32-C3 (Seeed XIAO ESP32-C3)
+- **Sensors**: Adafruit MPU6050 (accelerometer + gyroscope)
+- **LED**: Addressable RGB LED (WS2812-compatible)
+- **Switch**: Low-voltage tactile pushbutton
+- **Other Components**:
+  - Resistors as needed for sensors/switch
+  - Breadboard and jumper wires for prototyping
+  - Enclosure designed for laser cutting
+
+## Design Decisions
+- **Modular Hardware Structure**: Components were separated into distinct roles.
+- **Gesture Recognition Setup**: MPU6050 selected for compatibility with Edge Impulse and stability in motion tracking.
+- **Enclosure**: Designed a compact, laser-cut thin veneer box that:
+  - Protects components
+  - Has openings for the led and wires to the switch
+  - Is easy to assemble using interlocking slots
+- **User Interaction**: A button allows for gesture data collection triggering, giving better control during training.
+
+## Battery Information
+- **Type**: Rechargeable Lithium-ion battery
+- **Capacity**: 3.7V 500mAh
+- **Power Supply Consideration**:
+  - Chosen to support at least 1–2 hours of active usage.
+  - Voltage regulator onboard ESP32-C3 supports direct battery connection.
+  - USB port used for both programming and recharging.
